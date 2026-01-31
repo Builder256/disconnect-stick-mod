@@ -1,10 +1,10 @@
-package com.myname.mymodid;
+package com.builder.disconnectstickmod;
 
 import java.io.File;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class Config {
+public class DisconnectStickModConfig {
 
     public static String greeting = "Hello World";
 

@@ -1,4 +1,4 @@
-package com.myname.mymodid;
+package com.builder.disconnectstickmod;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,13 +10,19 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
-@Mod(modid = MyMod.MODID, version = Tags.VERSION, name = "MyMod", acceptedMinecraftVersions = "[1.7.10]")
-public class MyMod {
+@Mod(
+    modid = DisconnectStickMod.MODID,
+    version = Tags.VERSION,
+    name = "Disconnect Stick Mod",
+    acceptedMinecraftVersions = "[1.7.10]")
+public class DisconnectStickMod {
 
-    public static final String MODID = "mymodid";
+    public static final String MODID = "disconnectstickmod";
     public static final Logger LOG = LogManager.getLogger(MODID);
 
-    @SidedProxy(clientSide = "com.myname.mymodid.ClientProxy", serverSide = "com.myname.mymodid.CommonProxy")
+    @SidedProxy(
+        clientSide = "com.builder.disconnectstickmod.ClientProxy",
+        serverSide = "com.builder.disconnectstickmod.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler

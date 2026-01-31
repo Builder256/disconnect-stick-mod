@@ -13,8 +13,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         mavenLocal()
-    }
-}
+    }}
 
 plugins {
     id("com.gtnewhorizons.gtnhsettingsconvention") version("2.0.7")
