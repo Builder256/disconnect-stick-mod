@@ -1,38 +1,44 @@
 /*
- * Add your dependencies here. Supported configurations:
- *  - api("group:name:version:classifier"): if you use the types from this dependency in the public API of this mod
- *       Available at runtime and compiletime for mods depending on this mod
- *  - implementation("g:n:v:c"): if you need this for internal implementation details of the mod, but none of it is visible via the public API
- *       Available at runtime but not compiletime for mods depending on this mod
- *  - compileOnly("g:n:v:c"): if the mod you're building doesn't need this dependency during runtime at all, e.g. for optional mods
- *       Not available at all for mods depending on this mod, only visible at compiletime for this mod
- *  - compileOnlyApi("g:n:v:c"): like compileOnly, but also visible at compiletime for mods depending on this mod
- *       Available at compiletime but not runtime for mods depending on this mod
- *  - runtimeOnlyNonPublishable("g:n:v:c"): if you want to include a mod in this mod's runClient/runServer runs, but not publish it as a dependency
- *       Not available at all for mods depending on this mod, only visible at runtime for this mod
- *  - devOnlyNonPublishable("g:n:v:c"): a combination of runtimeOnlyNonPublishable and compileOnly for dependencies present at both compiletime and runtime,
- *       but not published as Maven dependencies - useful for RFG-deobfuscated dependencies or local testing
- *  - runtimeOnly("g:n:v:c"): if you don't need this at compile time, but want it to be present at runtime
- *       Available at runtime for mods depending on this mod
- *  - annotationProcessor("g:n:v:c"): mostly for java compiler plugins, if you know you need this, use it, otherwise don't worry
- *  - testCONFIG("g:n:v:c") - replace CONFIG by one of the above (except api), same as above but for the test sources instead of main
+ * ここに依存関係を追加してください。サポートされている構成（Configuration）は以下の通りです：
+ *  - api("group:name:version:classifier"): この依存関係の型をこのModの公開APIで使用する場合
+ *       このModに依存する他のModの実行時およびコンパイル時に利用可能です
+ *  - implementation("g:n:v:c"): Modの内部実装の詳細に必要だが、公開APIからは見えない場合
+ *       このModに依存する他のModの実行時には利用可能ですが、コンパイル時には利用できません
+ *  - compileOnly("g:n:v:c"): 構築中のModが実行時にこの依存関係を全く必要としない場合（例：オプションのModなど）
+ *       このModに依存する他のModには一切公開されず、このModのコンパイル時にのみ見えます
+ *  - compileOnlyApi("g:n:v:c"): compileOnlyと同様ですが、このModに依存する他のModのコンパイル時にも見えます
+ *       このModに依存する他のModのコンパイル時に利用可能ですが、実行時には利用できません
+ *  - runtimeOnlyNonPublishable("g:n:v:c"): このModのrunClient/runServer実行時にModを含めたいが、依存関係として公開（Publish）したくない場合
+ *       このModに依存する他のModには一切公開されず、このModの実行時にのみ見えますz
+ *  - devOnlyNonPublishable("g:n:v:c"): runtimeOnlyNonPublishableとcompileOnlyの組み合わせで、コンパイル時と実行時の両方に存在するが、
+ *       Maven依存関係として公開されない依存関係用 - RFGでデオブファス（難読化解除）された依存関係やローカルテストに便利です
+ *  - runtimeOnly("g:n:v:c"): コンパイル時には不要だが、実行時には存在させたい場合
+ *       このModに依存する他のModの実行時に利用可能です
+ *  - annotationProcessor("g:n:v:c"): 主にJavaコンパイラプラグイン用。必要なことがわかっている場合に使用してください
+ *  - testCONFIG("g:n:v:c") - CONFIGを上記（api以外）のいずれかに置き換えます。メインソースではなくテストソース用である点を除き、上記と同じです
  *
- *  - shadowImplementation("g:n:v:c"): effectively the same as API, but the dependency is included in your jar under a renamed package name
- *       Requires you to enable usesShadowedDependencies in gradle.properties
+ *  - shadowImplementation("g:n:v:c"): 実質的にAPIと同じですが、依存関係がパッケージ名を変更してJarに含まれます
+ *       gradle.propertiesでusesShadowedDependenciesを有効にする必要があります
  *
- *  - compile("g:n:v:c"): deprecated, replace with "api" (works like the old "compile") or "implementation" (can be more efficient)
+ *  - compile("g:n:v:c"): 非推奨です。「api」（古い「compile」のように動作）または「implementation」（より効率的）に置き換えてください
  *
- * You can exclude transitive dependencies (dependencies of the chosen dependency) by appending { transitive = false } if needed,
- * but use this sparingly as it can break using your mod as another mod's dependency if you're not careful.
+ * 必要に応じて { transitive = false } を追加することで、間接的な依存関係（選択した依存関係が依存しているもの）を除外できます。
+ * ただし、注意しないと自分のModを別のModの依存関係として使用する際にエラーが発生する可能性があるため、控えめに使用してください。
  *
- * To depend on obfuscated jars you can use `devOnlyNonPublishable(rfg.deobf("dep:spec:1.2.3"))` to fetch an obfuscated jar from maven,
- * or `devOnlyNonPublishable(rfg.deobf(project.files("libs/my-mod-jar.jar")))` to use a file.
+ * 難読化されたJarに依存するには、`devOnlyNonPublishable(rfg.deobf("dep:spec:1.2.3"))` を使用してMavenから取得するか、
+ * `devOnlyNonPublishable(rfg.deobf(project.files("libs/my-mod-jar.jar")))` を使用してファイルを使用できます。
  *
- * Gradle names for some of the configuration can be misleading, compileOnlyApi and runtimeOnly both get published as dependencies in Maven, but compileOnly does not.
- * The buildscript adds runtimeOnlyNonPublishable to also have a runtime dependency that's not published.
+ * Gradleの構成名の一部は紛らわしい場合があります。compileOnlyApiとruntimeOnlyは両方ともMavenの依存関係として公開されますが、compileOnlyは公開されません。
+ * ビルドスクリプトは、公開されない実行時依存関係も持てるようにruntimeOnlyNonPublishableを追加しています。
  *
- * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
+ * 詳細については、https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph を参照してください
  */
 dependencies {
-    //runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.69-GTNH:dev")
+    // CoFHLib/CoFHCore: Redstone Flux API用
+    compileOnlyApi("curse.maven:cofh-lib-220333:2388747") // コンパイル時用: クラスでCoFHLibが持つRFのパッケージをimportしてもクラッシュしないようにする
+    runtimeOnlyNonPublishable("curse.maven:cofh-core-69162:2388751") // 実行時用: 実行時にCoFHCoreを導入する
+    // Thermal Foundation: 動作確認用
+    runtimeOnlyNonPublishable("curse.maven:thermal-foundation-222880:2388753") // 実行時用: 実行時にThermal Foundationを導入する
+    // Thermal Expansion: 動作確認用
+    runtimeOnlyNonPublishable("curse.maven:thermal-expansion-69163:2388759") // 実行時用: 実行時にThermal Expansionを導入する
 }

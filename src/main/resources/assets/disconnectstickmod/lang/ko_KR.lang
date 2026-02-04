@@ -1,0 +1,9 @@
+item.disconnect_stick.name=조작봉
+item.disconnect_stick.info=%1$s 공급 확인: %2$d / %3$d %4$s (면: %5$s)
+disconnectstick.direction.down=아래
+disconnectstick.direction.up=위
+disconnectstick.direction.north=북
+disconnectstick.direction.south=남
+disconnectstick.direction.west=서
+disconnectstick.direction.east=동
+disconnectstick.direction.unknown=알 수 없음

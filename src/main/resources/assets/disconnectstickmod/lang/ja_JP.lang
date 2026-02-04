@@ -1,0 +1,9 @@
+item.disconnect_stick.name=ディスコン棒
+item.disconnect_stick.info=%1$s供給を確認: %2$d / %3$d %4$s (面: %5$s)
+disconnectstick.direction.down=下
+disconnectstick.direction.up=上
+disconnectstick.direction.north=北
+disconnectstick.direction.south=南
+disconnectstick.direction.west=西
+disconnectstick.direction.east=東
+disconnectstick.direction.unknown=不明

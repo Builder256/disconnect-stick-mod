@@ -1,0 +1,9 @@
+item.disconnect_stick.name=Disconnect Stick
+item.disconnect_stick.info=%1$s supply confirmed: %2$d / %3$d %4$s (Side: %5$s)
+disconnectstick.direction.down=Down
+disconnectstick.direction.up=Up
+disconnectstick.direction.north=North
+disconnectstick.direction.south=South
+disconnectstick.direction.west=West
+disconnectstick.direction.east=East
+disconnectstick.direction.unknown=Unknown
