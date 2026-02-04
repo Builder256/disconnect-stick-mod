@@ -1,16 +1,18 @@
 package com.builder.disconnectstickmod.energy;
 
-import com.builder.disconnectstickmod.energy.redstoneflux.RFEnergyProvider;
-import net.minecraft.tileentity.TileEntity;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.tileentity.TileEntity;
+
+import com.builder.disconnectstickmod.energy.redstoneflux.RFEnergyProvider;
 
 /**
  * 利用可能なエネルギープロバイダを管理するレジストリ。
  * TileEntityに対応するプロバイダを検索し、エネルギー情報を取得する。
  */
 public class EnergyInfoProviderRegistry {
+
     private static final List<IEnergyInfoProvider> providers = new ArrayList<>();
     private static boolean initialized = false;
 
@@ -18,8 +20,7 @@ public class EnergyInfoProviderRegistry {
      * レジストリを初期化する。Modのロード時に一度だけ呼び出す。
      */
     public static void init() {
-        if (initialized)
-            return;
+        if (initialized) return;
         initialized = true;
 
         // RFプロバイダを登録（CoFHCoreの存在チェックはRFUtil内で行う）

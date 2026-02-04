@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
  * 将来的にIC2 (EU) 等に対応する際は、このインターフェースを実装する。
  */
 public interface IEnergyInfoProvider {
+
     /**
      * このプロバイダが利用可能か（対応Modがロードされているか）。
      * パフォーマンスのため、結果はキャッシュされるべき。

@@ -5,6 +5,7 @@ package com.builder.disconnectstickmod.energy;
  * 電力規格に依存しない共通の戻り値型として使用。
  */
 public class EnergyInfo {
+
     /** その装置に現在保存されている電力量 */
     public final int stored;
     /** その装置が保存することができる最大電力量 */

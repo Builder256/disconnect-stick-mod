@@ -1,19 +1,22 @@
 package com.builder.disconnectstickmod.energy.redstoneflux;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import com.builder.disconnectstickmod.energy.EnergyInfo;
+import com.builder.disconnectstickmod.energy.IEnergyInfoProvider;
+
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import com.builder.disconnectstickmod.energy.EnergyInfo;
-import com.builder.disconnectstickmod.energy.IEnergyInfoProvider;
 import cpw.mods.fml.common.Loader;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * CoFH Redstone Flux (RF) 用のエネルギー情報プロバイダ。
  * CoFH APIの型はこのクラス内に閉じ込める。
  */
 public class RFEnergyProvider implements IEnergyInfoProvider {
+
     private static final String COFH_CORE_MOD_ID = "CoFHCore";
     private static final String UNIT = "RF";
 
