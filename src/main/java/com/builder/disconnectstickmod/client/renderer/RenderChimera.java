@@ -25,7 +25,7 @@ public class RenderChimera implements ISimpleBlockRenderingHandler {
         TileEntity targetTileEntity = world.getTileEntity(x, y, z);
         // なんとなくそのままキャストするのが不安
         if (!(targetTileEntity instanceof TileEntityChimera targetTileEntityChimera)) return false;
-0
+
         byte targetVisibilityMask = targetTileEntityChimera.getVisibilityMask();
         Block[] targetRenderBlocks = targetTileEntityChimera.getRenderBlocks();
 
