@@ -1,5 +1,6 @@
 package com.builder.disconnectstickmod.client.renderer;
 
+import com.builder.disconnectstickmod.DisconnectStickMod;
 import com.builder.disconnectstickmod.tileentities.TileEntityChimera;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;
@@ -19,45 +20,39 @@ public class RenderChimera implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
+        // 同じチャンク内に同じブロックが置かれるたびに、既存のブロックでもそれぞれ実行される
+//        DisconnectStickMod.LOG.info("renderWorldBlock is called!!");
+
         // よくわからんけどフィルタするっぽい
         if (modelId != this.getRenderId()) return false;
 
         TileEntity targetTileEntity = world.getTileEntity(x, y, z);
-        // なんとなくそのままキャストするのが不安
         if (!(targetTileEntity instanceof TileEntityChimera targetTileEntityChimera)) return false;
 
-        byte targetVisibilityMask = targetTileEntityChimera.getVisibilityMask();
-        Block[] targetRenderBlocks = targetTileEntityChimera.getRenderBlocks();
+        Block[] targetCellBlocks = targetTileEntityChimera.getCellBlocks();
 
         for (int i = 0; i < 8; i++) {
-            if ((targetVisibilityMask & (1 << i)) == 0) continue;
-            // targetVisibilityMaskの下からi番目のビットが1のとき
+            Block cellBlock = targetCellBlocks[i];
 
+            boolean isEastSide = (i & 1) != 0;
+            boolean isSouthSide = (i & 2) != 0;
+            boolean isTopSIde = (i & 4) != 0;
 
-            double xMin = (i & 1) * 0.5;
-            double yMin = ((i >> 1) & 1) * 0.5;
-            double zMin = ((i >> 2) & 1) * 0.5;
+            double xMin = isEastSide ? 0.5 : 0;
+            double yMin = isTopSIde ? 0.5 : 0;
+            double zMin = isSouthSide ? 0.5 : 0;
 
             renderer.setRenderBounds(xMin, yMin, zMin, xMin + 0.5, yMin + 0.5, zMin + 0.5);
 
-            Block targetRenderBlock = targetRenderBlocks[i];
-            if (targetRenderBlock != null) {
-                renderer.overrideBlockTexture = targetRenderBlock.getIcon(0, 0);
-            }
+            if (cellBlock == null) continue;
 
+            // TODO: 面やメタデータによって異なるテクスチャに対応する
+            renderer.setOverrideBlockTexture(cellBlock.getIcon(0, 0));
             renderer.renderStandardBlock(block, x, y, z);
         }
 
-        // 描画範囲を設定する
-//        renderer.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
-        // ブロックのテクスチャを上書きする
-//        renderer.overrideBlockTexture = Blocks.stone.getIcon(0, 0);
-        // 直方体をその場所に描画
-//        renderer.renderStandardBlock(block, x, y, z);
-
-
         // 上書きしたブロックのテクスチャを戻す
-        renderer.overrideBlockTexture = null;
+        renderer.clearOverrideBlockTexture();
 
         return true;
     }

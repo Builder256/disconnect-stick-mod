@@ -41,6 +41,7 @@ public class BlockChimera extends Block implements ITileEntityProvider {
     /**
      * ブロックが右クリックされたときの動作
      *
+     * @param side クリックされた面 0:底面, 1:天面, 2:北面, 3:南面, 4: 西面, 5: 東面
      * @return 腕を振るかどうか？？？？
      */
     @Override
@@ -48,15 +49,28 @@ public class BlockChimera extends Block implements ITileEntityProvider {
         // クライアントサイドでは処理しない
         if (!world.isRemote) return true;
 
-        // デバッグ用
-        DisconnectStickMod.LOG.info("block clicked\n world: {},\nx: {}, y: {}, z: {}, \nplayer: {},\nside: {},\nsubX: {}, subY: {}, subZ: {}", world, x, y, z, player, side, subX, subY, subZ);
-
         Block block = getBlockFromPlayerHand(player);
         if (block == null) return false;
 
-        DisconnectStickMod.LOG.info("block in hand: {}", block);
+//        DisconnectStickMod.LOG.info("block in hand: {}", block);
+        TileEntity correspondingTileEntity = world.getTileEntity(x, y, z);
+        if (!(correspondingTileEntity instanceof TileEntityChimera corresponding)) return false;
 
-        return true;
+        DisconnectStickMod.LOG.info("block clicked\n world: {},\nx: {}, y: {}, z: {}, \nplayer: {},\nside: {},\nsubX: {}, subY: {}, subZ: {}", world, x, y, z, player, side, subX, subY, subZ);
+
+        int cellIndex = 0;
+
+        boolean isEastSide = subX > 0.5f;
+        boolean isSouthSide = subZ > 0.5f;
+        boolean isTopSide = subY > 0.5f;
+
+        if (isEastSide) cellIndex += 1;
+        if (isSouthSide) cellIndex += 2;
+        if (isTopSide) cellIndex += 4;
+
+//        DisconnectStickMod.LOG.info(cellIndex);
+
+        return corresponding.placeCellBlock(cellIndex, block);
     }
 
     /**
@@ -68,21 +82,14 @@ public class BlockChimera extends Block implements ITileEntityProvider {
         return renderId;
     }
 
-    /**
-     * 通常のブロックとしてレンダリングされるかどうからしい
-     * 何を返しても変わった感じはしない
-     * @return 常にfalse
-     */
-//    public boolean renderAsNormalBlock() {
-//        return false;
-//    }
 
     /**
      * 不透過で1mの立方体であるかどうか
      * 隣接するブロック間の面を描画するかや、松明や赤石ワイヤを設置できるかどうかの判定に利用されるらしい
+     *
      * @return 常にfalse
      */
-    public boolean isOpaqueCube(){
+    public boolean isOpaqueCube() {
         return false;
     }
 

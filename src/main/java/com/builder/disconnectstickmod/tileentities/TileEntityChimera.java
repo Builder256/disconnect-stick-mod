@@ -1,36 +1,29 @@
 package com.builder.disconnectstickmod.tileentities;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 
-import java.util.Arrays;
-
 public class TileEntityChimera extends TileEntity {
-
-    /** 各領域を描画するかどうか */
-    private byte visibilityMask = -1;
-    /** 各領域のテクスチャのブロック */
-    private Block[] renderBlocks = new Block[8];
+    /** セルの数 */
+    private final int RANGE = 8;
+    /** 各セルのテクスチャのブロック */
+    private final Block[] cellBlocks = new Block[RANGE];
 
     public TileEntityChimera() {
-//        visibilityMask = -127; // テスト用: 00001000
-        Arrays.fill(renderBlocks, Blocks.stone);
     }
 
-    public byte getVisibilityMask() {
-        return visibilityMask;
+    public boolean placeCellBlock(int cellIndex, Block block){
+        if(cellIndex < 0 || cellIndex > RANGE) return false;
+        cellBlocks[cellIndex] = block;
+
+        // サーバーにセーブデータに保存すべき内容ありと伝える
+        this.markDirty();
+        // クライアントに再レンダリングしろと伝える
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        return true;
     }
 
-    public Block[] getRenderBlocks() {
-        return renderBlocks;
-    }
-
-    public void setVisibilityMask(byte visibilityMask){
-        this.visibilityMask = visibilityMask;
-    }
-
-    public void setRenderBlocks(Block[] renderBlocks) {
-        this.renderBlocks = renderBlocks;
+    public Block[] getCellBlocks() {
+        return cellBlocks;
     }
 }
