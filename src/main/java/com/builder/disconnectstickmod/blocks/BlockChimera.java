@@ -1,7 +1,7 @@
 package com.builder.disconnectstickmod.blocks;
 
-import com.builder.disconnectstickmod.DisconnectStickMod;
 import com.builder.disconnectstickmod.tileentities.TileEntityChimera;
+import com.github.bsideup.jabel.Desugar;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -42,21 +42,18 @@ public class BlockChimera extends Block implements ITileEntityProvider {
      * ブロックが右クリックされたときの動作
      *
      * @param side クリックされた面 0:底面, 1:天面, 2:北面, 3:南面, 4: 西面, 5: 東面
-     * @return 腕を振るかどうか？？？？
+     * @return 腕を振るかどうかに見える
      */
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float subX, float subY, float subZ) {
+//        DisconnectStickMod.LOG.info("block clicked\n world: {},\nx: {}, y: {}, z: {}, \nplayer: {},\nside: {},\nsubX: {}, subY: {}, subZ: {}", world, x, y, z, player, side, subX, subY, subZ);
+
         // クライアントサイドでは処理しない
         if (!world.isRemote) return true;
-
-        Block block = getBlockFromPlayerHand(player);
-        if (block == null) return false;
-
-//        DisconnectStickMod.LOG.info("block in hand: {}", block);
+        BlockAndMetadata blockAndMetadata = getHoldingBlockAndItsMetadataFromPlayer(player);
+        if (blockAndMetadata == null) return false;
         TileEntity correspondingTileEntity = world.getTileEntity(x, y, z);
         if (!(correspondingTileEntity instanceof TileEntityChimera corresponding)) return false;
-
-        DisconnectStickMod.LOG.info("block clicked\n world: {},\nx: {}, y: {}, z: {}, \nplayer: {},\nside: {},\nsubX: {}, subY: {}, subZ: {}", world, x, y, z, player, side, subX, subY, subZ);
 
         int cellIndex = 0;
 
@@ -68,9 +65,9 @@ public class BlockChimera extends Block implements ITileEntityProvider {
         if (isSouthSide) cellIndex += 2;
         if (isTopSide) cellIndex += 4;
 
-//        DisconnectStickMod.LOG.info(cellIndex);
-
-        return corresponding.placeCellBlock(cellIndex, block);
+        Block block = blockAndMetadata.block();
+        int metadata = blockAndMetadata.metadata();
+        return corresponding.placeCellBlock(cellIndex, block, metadata);
     }
 
     /**
@@ -84,7 +81,7 @@ public class BlockChimera extends Block implements ITileEntityProvider {
 
 
     /**
-     * 不透過で1mの立方体であるかどうか
+     * 不透過で1mの立方体であるかどうか<br>
      * 隣接するブロック間の面を描画するかや、松明や赤石ワイヤを設置できるかどうかの判定に利用されるらしい
      *
      * @return 常にfalse
@@ -103,23 +100,24 @@ public class BlockChimera extends Block implements ITileEntityProvider {
      * @param player 取得するプレイヤー
      * @return Block、なければnull
      */
-    private static Block getBlockFromPlayerHand(EntityPlayer player) {
-        // プレイヤーが手に持っているアイテム
+    private BlockAndMetadata getHoldingBlockAndItsMetadataFromPlayer(EntityPlayer player) {
+        // プレイヤーが手に持っているアイテム ないときはnull
         ItemStack itemStackInHand = player.getHeldItem();
-        // 手に何も持っていないときなどにnullになる
-        // 意味がないことを示すためにfalseを返して腕を振らなくする
         if (itemStackInHand == null) return null;
 
-        // ItemStackからItemを取得
+        // ItemStackに対応するItemを取得 nullになることがある
         Item itemInHand = itemStackInHand.getItem();
-        // nullになることがあるっぽい 同様に腕を振らない
         if (itemInHand == null) return null;
 
-        // ItemからBlockを取得
+        // Itemに対応するBlockを取得 nullやBlocks.airになることがある
         Block blockInHand = Block.getBlockFromItem(itemInHand);
-        // 対応するBlockがないときにnullやBlocks.airが返されるみたい
         if (blockInHand == null || blockInHand.equals(Blocks.air)) return null; // equals？それとも等価演算子？
 
-        return blockInHand;
+        int metadata = itemInHand.getDamage(itemStackInHand);
+
+        return new BlockAndMetadata(blockInHand, metadata);
+    }
+    @Desugar
+    public record BlockAndMetadata(Block block, int metadata) {
     }
 }
