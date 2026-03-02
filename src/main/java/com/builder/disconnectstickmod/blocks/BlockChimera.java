@@ -49,7 +49,7 @@ public class BlockChimera extends Block implements ITileEntityProvider {
 //        DisconnectStickMod.LOG.info("block clicked\n world: {},\nx: {}, y: {}, z: {}, \nplayer: {},\nside: {},\nsubX: {}, subY: {}, subZ: {}", world, x, y, z, player, side, subX, subY, subZ);
 
         // クライアントサイドでは処理しない
-        if (!world.isRemote) return true;
+//        if (world.isRemote) return true;
         BlockAndMetadata blockAndMetadata = getHoldingBlockAndItsMetadataFromPlayer(player);
         if (blockAndMetadata == null) return false;
         TileEntity correspondingTileEntity = world.getTileEntity(x, y, z);

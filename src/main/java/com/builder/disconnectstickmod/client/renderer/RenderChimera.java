@@ -1,5 +1,6 @@
 package com.builder.disconnectstickmod.client.renderer;
 
+import com.builder.disconnectstickmod.DisconnectStickMod;
 import com.builder.disconnectstickmod.tileentities.TileEntityChimera;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;
@@ -34,7 +35,7 @@ public class RenderChimera implements ISimpleBlockRenderingHandler {
         if (!(targetTileEntity instanceof TileEntityChimera targetTileEntityChimera)) return false;
 
         Block[] targetCellBlocks = targetTileEntityChimera.getCellBlocks();
-        int[] targetMetadatas = targetTileEntityChimera.getMetadatas();
+        int[] targetMetadatas = targetTileEntityChimera.getCellMetadatas();
 
         for (int i = 0; i < 8; i++) {
             Block cellBlock = targetCellBlocks[i];
@@ -72,6 +73,8 @@ public class RenderChimera implements ISimpleBlockRenderingHandler {
             for (int j = 0; j < renderFaces.size(); j++) {
                 IIcon texture = cellBlock.getIcon(j, metadata);
 //                renderer.setOverrideBlockTexture(texture);
+//                DisconnectStickMod.LOG.info(block);
+//                DisconnectStickMod.LOG.info(texture);
                 renderFaces.get(j).accept(block, x, y, z, texture);
             }
         }
