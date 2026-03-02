@@ -1,6 +1,5 @@
 package com.builder.disconnectstickmod.tileentities;
 
-import com.builder.disconnectstickmod.DisconnectStickMod;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -70,17 +69,7 @@ public class TileEntityChimera extends TileEntity {
 
     @Override
     public boolean canUpdate() {
-        // TODO: 開発完了したらfalseにしろ
         return false;
-    }
-
-    // デバッグ用
-    @Override
-    public void updateEntity(){
-        super.updateEntity();
-        final boolean isClientSide = this.worldObj.isRemote;
-        DisconnectStickMod.LOG.info((isClientSide ? "client side " : "server side ") + "updateEntity: " + Arrays.toString(this.cellBlocks));
-        DisconnectStickMod.LOG.info((isClientSide ? "client side " : "server side ") + "updateEntity: " + Block.getIdFromBlock(cellBlocks[0]));
     }
 
     // 渡されたNBTから状態を読んでTileEntityに書き込む
@@ -97,7 +86,7 @@ public class TileEntityChimera extends TileEntity {
         if (blockNameTagList.tagCount() != this.RANGE || metadatas.length != this.RANGE) {
             this.initializeCells();
             return;
-        };
+        }
 
         for (int i = 0; i < this.RANGE; i++) {
             String blockName = blockNameTagList.getStringTagAt(i);
@@ -110,12 +99,6 @@ public class TileEntityChimera extends TileEntity {
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-
-//        String[] blockNames = new String[this.RANGE];
-//        for (int i = 0; i < blockNames.length ; i++) {
-//            Block block = this.cellBlocks[i];
-//            blockNames[i] = block != null ? Block.blockRegistry.getNameForObject(block) : "";
-//        }
 
         final String[] blockNames =  Arrays.stream(this.cellBlocks).map(block -> block != null ? Block.blockRegistry.getNameForObject(block) : "").toArray(String[]::new);
         final NBTTagList blockNameTagList = new NBTTagList();
